@@ -19,6 +19,7 @@ public class Main extends Application {
         // this populates the combobox.
         Controller cont = loader.getController();
         cont.populateChartBox();
+        cont.populateChartData();
 
     }
 

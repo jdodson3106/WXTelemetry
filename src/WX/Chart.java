@@ -1,7 +1,7 @@
 package WX;
 
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.StackedAreaChart;
 
 /**
  * Created by justindodson on 6/7/17.
@@ -23,7 +23,7 @@ public class Chart {
         this.title = title;
         this.xAxisLabel = xAxisLabel;
         this.yAxisLable = yAxisLable;
-        StackedAreaChart<Number, Number> stackedAreaChart = new StackedAreaChart<Number, Number>(this.xAxis, this.yAxis);
+        AreaChart<Number, Number> stackedAreaChart = new AreaChart<Number, Number>(this.xAxis, this.yAxis);
         stackedAreaChart.setTitle(this.title);
         xAxis.setLabel(this.xAxisLabel);
         yAxis.setLabel(this.yAxisLable);
