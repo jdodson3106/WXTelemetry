@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:a="http://javafx.com/javafx/8.0.111" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WX.Controller">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:a="http://javafx.com/javafx/8.0.111" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WX.Controller">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -18,17 +30,26 @@
                     <MenuItem fx:id="closeBtn" mnemonicParsing="false" onAction="#close" text="Close" />
                   </items>
                 </Menu>
-                <Menu fx:id="menuComSelect" mnemonicParsing="false" text="COM Select" />
               </menus>
             </MenuBar>
             <HBox>
                <children>
-                  <DatePicker fx:id="dates">
+                  <ComboBox fx:id="menuComSelect" promptText="Select Comm Port">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
-                  </DatePicker>
+                  </ComboBox>
+                  <Button mnemonicParsing="false" text="Connect" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
                   <Region HBox.hgrow="ALWAYS" />
+                  <DatePicker fx:id="dates">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="10.0" top="5.0" />
+                     </HBox.margin>
+                  </DatePicker>
                </children>
             </HBox>
          </children>
@@ -62,7 +83,7 @@
    <left>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <ComboBox fx:id="chartSelection" prefWidth="200.0" promptText="Select Chart Type">
+            <ComboBox fx:id="chartSelection" onAction="#selectChartType" prefWidth="200.0" promptText="Select Chart Type">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
