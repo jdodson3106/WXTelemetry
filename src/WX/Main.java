@@ -20,7 +20,6 @@ public class Main extends Application {
         Controller cont = loader.getController();
         cont.populateChartBox();
         cont.populateCommPorts();
-        //cont.populateChartData();
 
 
 

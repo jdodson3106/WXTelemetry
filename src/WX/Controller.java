@@ -11,6 +11,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
@@ -18,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class Controller implements Initializable{
 
@@ -35,6 +37,8 @@ public class Controller implements Initializable{
     private MenuItem closeBtn;
     @FXML
     private ComboBox chartSelection;
+    @FXML
+    private Button connectButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -194,6 +198,34 @@ public class Controller implements Initializable{
     @FXML
     public void selectPort(ActionEvent event) {
         //TODO: Select serial port based on the combobox selection.
+        if(connectButton.getText().equals("Connect")) {
+            // Assign selected port and try to connect
+            final SerialPort chosenPort = SerialPort.getCommPort(menuComSelect.getValue().toString());
+            chosenPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
+            if (chosenPort.openPort()) {
+                connectButton.setText("Disconnect");
+                menuComSelect.setDisable(true);
+
+                // Create a new thread that will listen for incoming data and populate the graph
+                Thread thread = new Thread(){
+                    @Override
+                    public void run() {
+                        Scanner inputStream = new Scanner(chosenPort.getInputStream());
+                        while (inputStream.hasNextLine()) {
+                            String line1 = inputStream.nextLine();
+                            String line2 = inputStream.nextLine();
+                            int pressure = Integer.parseInt(line1);
+                            int altitude = Integer.parseInt(line2);
+                            // TODO: Add data to chart series to be populated
+                        }
+                    }
+                };
+                thread.run();
+            } else {
+                // disconnect from the port
+            }
+
+        }
     }
 
 
