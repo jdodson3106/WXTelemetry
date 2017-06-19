@@ -23,13 +23,15 @@ import java.util.Scanner;
 
 public class Controller implements Initializable{
 
-
+    private XYChart<String, Number> displayChart;
+    private XYChart<String, Number> selectedChart;
     private final CategoryAxis xAxis = new CategoryAxis();
     private final NumberAxis yAxis = new NumberAxis();
     private AreaChart areaChart;
     private LineChart lineChart;
     private XYChart.Series<String, Number> temperature = new XYChart.Series<String, Number>();
     private XYChart.Series<String, Number> pressure = new XYChart.Series<String, Number>();
+
     @FXML
     private ComboBox menuComSelect;
     @FXML
@@ -59,25 +61,28 @@ public class Controller implements Initializable{
         chartSelection.getItems().addAll(list);
     }
 
+
+    /*
+        * checks the value of the chartSelection combobox
+        * and creates that chosen chart type. Then the method
+        * displays the chart and sets the displayChart to the selectedChart.
+     */
     @FXML
     public void selectChartType(ActionEvent event) {
         if (chartSelection.getValue().equals("Area Chart")) {
-            areaChart = createAreaChart();
-            //populateAreaChartData();
-            borderPane.setCenter(areaChart);
-
+            selectedChart = createAreaChart();
+            borderPane.setCenter(selectedChart);
+            displayChart = selectedChart;
         }
         else if (chartSelection.getValue().equals("Line Chart")) {
-            lineChart = createLineChart();
-           // populateLineChartData();
-            borderPane.setCenter(lineChart);
-
+            selectedChart = createLineChart();
+            borderPane.setCenter(selectedChart);
+            displayChart = selectedChart;
         }
         else if(chartSelection.getValue().equals("Ass Chart")) {
             showAlert();
         }
-
-        System.out.println(chartSelection.getValue().toString());
+        //System.out.println(chartSelection.getValue().toString());
 
     }
 
@@ -87,7 +92,8 @@ public class Controller implements Initializable{
     private AreaChart<String, Number> createAreaChart() {
         AreaChart<String, Number> areaChart = new AreaChart<String, Number>(xAxis, yAxis);
         areaChart.setTitle("Atmospheric Data");
-        borderPane.setCenter(areaChart);
+        xAxis.setLabel("Current Time");
+        yAxis.setLabel("Measurements");
         return areaChart;
     }
 
@@ -99,7 +105,6 @@ public class Controller implements Initializable{
         lineChart.setTitle("Atmospheric Data");
         xAxis.setLabel("Current Time");
         yAxis.setLabel("Measurements");
-        borderPane.setCenter(lineChart);
         return lineChart;
     }
 
@@ -112,23 +117,12 @@ public class Controller implements Initializable{
         System.exit(0);
     }
 
-
-
-    /*
-     * populates charts with dummy data
-     */
-    @FXML
-    public void populateAreaChartData(XYChart.Series pressureReading, XYChart.Series altitudeReading) {
-        pressureReading.setName("Pressure (mBar)");
-        altitudeReading.setName("Altitude");
-        areaChart.getData().addAll(pressureReading, altitudeReading);
-    }
-
-    @FXML
-    public void populateLineChartData(XYChart.Series pressureReading, XYChart.Series altitudeReading) {
-        pressureReading.setName("Pressure (mBar)");
-        altitudeReading.setName("Altitude");
-        lineChart.getData().addAll(pressureReading, altitudeReading);
+    public XYChart<String, Number> displayChartType(XYChart<String, Number> chart) {
+        if (chartSelection.getValue().equals("Area Chart")) {
+            return createAreaChart();
+        } else if(chartSelection.getValue().equals("Line Chart")); {
+            return createLineChart();
+        }
     }
 
     public void showAlert() {
@@ -154,10 +148,9 @@ public class Controller implements Initializable{
      *  Select Comm Port from drop down
      */
     @FXML
-    public void selectPort(ActionEvent event) {
+    public void selectPort(final ActionEvent event) {
         // create a serial port object based on what port the user selects
         final SerialPort chosenPort = SerialPort.getCommPort(menuComSelect.getValue().toString());
-
         // Check to see if the connect button text is equal to connect when clicked.
         if(connectButton.getText().equals("Connect")) {
 
@@ -170,8 +163,6 @@ public class Controller implements Initializable{
                  */
                 connectButton.setText("Disconnect");
                 menuComSelect.setDisable(true);
-                // TODO: create chart type based on user selection;
-                final LineChart chart = createLineChart();
                 temperature.setName("Pressure (mBar)");
                 pressure.setName("Altitude");
                 // Create a new thread that will listen for incoming data and populate the graph
@@ -206,13 +197,14 @@ public class Controller implements Initializable{
                                         *       and move on to the next lines of incoming data.
                                      */
                                     try{
+                                        // TODO: implement string checking to ensure correct data is being received.
                                         String line1 = inputStream.nextLine();
                                         String line2 = inputStream.nextLine();
                                         final int pressureOutput = Integer.parseInt(line1);
                                         final int altitudeOutput = Integer.parseInt(line2);
                                         temperature.getData().add(new XYChart.Data<String, Number>(formatter.format(now), pressureOutput));
                                         pressure.getData().add(new XYChart.Data<String, Number>(formatter.format(now), altitudeOutput));
-                                        chart.getData().addAll(temperature, pressure);
+                                        displayChart.getData().addAll(temperature,pressure);
                                     } catch (Exception e){};
 
                                 }
